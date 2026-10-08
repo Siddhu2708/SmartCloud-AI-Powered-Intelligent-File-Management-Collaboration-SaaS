@@ -182,28 +182,15 @@ async def semantic_search(
     """
     Semantic search + keyword fallback.
     
-    Requires authentication. The authenticated user's ID is used for vector search.
-    If payload.owner_id is provided, it must match the authenticated user_id.
-    
-    Priority:
-    1. If owner_id available: vector similarity search (fast, accurate)
-    2. Otherwise: keyword matching on context_files
+    Requires authentication. Searches across ALL user files with full context.
     
     Args:
       query: Search query or description
-      context_files: File metadata for fallback
-      owner_id: User UUID for semantic search (must match authenticated user)
+      context_files: Optional file metadata (will be merged with all user files)
+      owner_id: User UUID (must match authenticated user if provided)
     
     Returns:
-      results: List of ranked search results
-        - title: File/chunk identifier
-        - snippet: Text excerpt
-        - score: Relevance score (0-1 for embeddings, TF-based for keywords)
-    
-    Raises:
-      401: If not authenticated
-      403: If owner_id doesn't match authenticated user
-      503: If AI service unavailable
+      results: List of ranked search results with file_id
     """
     # Security: if owner_id specified, must match authenticated user
     if payload.owner_id and str(payload.owner_id) != str(user_id):
@@ -212,8 +199,38 @@ async def semantic_search(
             detail="Cannot access data for another user.",
         )
     
-    # Use authenticated user_id for vector search if not already provided
-    effective_owner_id = payload.owner_id or user_id
+    # Fetch ALL user files for comprehensive search
+    try:
+        from supabase import create_client
+        from app.config import SUPABASE_URL, SUPABASE_KEY
+        
+        sb = create_client(SUPABASE_URL, SUPABASE_KEY)
+        all_files_res = sb.table('files').select('id,name,file_type,file_size').eq('owner_id', user_id).eq('is_trashed', False).execute()
+        all_user_files = all_files_res.data or []
+        
+        # Convert to the format expected by context_files
+        all_user_files_dicts = [
+            {
+                'id': f.get('id'),
+                'name': f.get('name'),
+                'type': f.get('file_type'),
+                'size': f.get('file_size'),
+            }
+            for f in all_user_files
+        ]
+        
+        # Merge with context files (avoiding duplicates by id)
+        provided_ids = {f.get('id') for f in payload.context_files}
+        for file_dict in all_user_files_dicts:
+            if file_dict.get('id') not in provided_ids:
+                # Create a FileContext object
+                payload.context_files.append(FileContext(
+                    name=file_dict.get('name', 'Unknown'),
+                    type=file_dict.get('type'),
+                    size=file_dict.get('size'),
+                ))
+    except Exception as e:
+        print(f"[AI Search] Failed to fetch all user files: {e}, using provided files only")
     
     # Create service instance with authenticated user
     service = SmartCloudAIService(authenticated_user_id=user_id)
@@ -221,9 +238,10 @@ async def semantic_search(
     try:
         results = service.search_documents(
             query=payload.query,
+            owner_id=user_id,
             context_files=_files_to_dicts(payload.context_files),
         )
-        return {"results": results, "search_type": "semantic" if payload.owner_id else "keyword"}
+        return {"results": results, "search_type": "semantic"}
     except RuntimeError as exc:
         raise _llm_unavailable(exc)
 

@@ -304,9 +304,10 @@ def verify_payment(
 
     return {
         "success": True,
-        "message": f"Payment verified. Your plan has been upgraded to {plan['display_name']}.",
+        "message": "✅ Payment Done!",
         "plan": plan_key,
         "plan_display_name": plan["display_name"],
+        "status": "Payment completed successfully",
     }
 
 

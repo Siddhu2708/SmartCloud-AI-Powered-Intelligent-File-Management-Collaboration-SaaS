@@ -28,8 +28,6 @@ import {
 import { formatBytes, formatRelativeTime } from '@/lib/utils'
 import { FileIcon } from '@/components/shared/FileIcon'
 import { Skeleton } from '@/components/shared/Loading'
-import { FileChunkingSection } from '@/components/dashboard/FileChunkingSection'
-import { EncryptionSection } from '@/components/dashboard/EncryptionSection'
 import type { FileRecord } from '@/lib/types'
 import type { AuditLog, UserSubscription } from '@/lib/storage'
 
@@ -314,19 +312,9 @@ export default function DashboardPage() {
               />
             </div>
           </div>
-
-          {/* File Chunking Section */}
-          <div className="rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
-            <FileChunkingSection />
-          </div>
-
-          {/* Encryption Section */}
-          <div className="rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
-            <EncryptionSection />
-          </div>
         </div>
 
-        {/* Recent files */}
+          {/* Recent files */}
         <div className="lg:col-span-2">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-xs font-semibold uppercase tracking-widest text-neutral-400">

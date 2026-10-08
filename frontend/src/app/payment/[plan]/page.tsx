@@ -230,11 +230,10 @@ export default function PaymentPage({ params }: { params: Promise<{ plan: string
               <CheckCircle2 className="h-10 w-10 text-emerald-500" />
             </div>
           </div>
-          <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">Payment Successful!</h2>
-          <p className="mt-3 text-neutral-500">
-            Your SmartCloud plan has been upgraded to{' '}
-            <span className="font-semibold text-neutral-900 dark:text-white capitalize">{plan.name}</span>.
-          </p>
+          <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">Payment Done! ✅</h2>
+          <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800 dark:border-emerald-900/40 dark:bg-emerald-950/20 dark:text-emerald-300">
+            <p className="font-semibold">Your <span className="capitalize">{plan.name}</span> plan is now active.</p>
+          </div>
           <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800 dark:border-emerald-900/40 dark:bg-emerald-950/20 dark:text-emerald-300">
             <p className="font-semibold">You now have access to:</p>
             <p className="mt-1">{plan.storage} storage · {plan.aiQuota === 'unlimited' ? 'Unlimited' : plan.aiQuota} AI queries/month</p>
@@ -374,7 +373,7 @@ export default function PaymentPage({ params }: { params: Promise<{ plan: string
                     {processing ? (
                       <><Loader2 className="h-4 w-4 animate-spin" /> Processing…</>
                     ) : (
-                      <><CreditCard className="h-4 w-4" /> Pay ₹{amountRupees.toLocaleString('en-IN')} with Razorpay</>
+                      <><CreditCard className="h-4 w-4" /> Pay ₹{amountRupees.toLocaleString('en-IN')} — Activate {plan.name} Plan</>
                     )}
                   </button>
 

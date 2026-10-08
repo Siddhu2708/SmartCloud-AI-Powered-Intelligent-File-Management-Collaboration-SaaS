@@ -12,6 +12,7 @@ import {
   LogOut,
   X,
   Loader2,
+  Package,
 } from 'lucide-react'
 import { useState } from 'react'
 import { NewMenu } from '@/components/drive/NewMenu'
@@ -39,6 +40,15 @@ export function Sidebar({ open, onClose, userName, userEmail, initials }: Sideba
   const router = useRouter()
   const { error: showError } = useToast()
   const [loggingOut, setLoggingOut] = useState(false)
+  const [selectedChunk, setSelectedChunk] = useState(512)
+  const [encryptionEnabled, setEncryptionEnabled] = useState(false)
+
+  const CHUNK_SIZES = [
+    { size: 256, name: '256 KB', benefit: 'Mobile' },
+    { size: 512, name: '512 KB', benefit: 'Recommended' },
+    { size: 1024, name: '1 MB', benefit: 'Desktop' },
+    { size: 5120, name: '5 MB', benefit: 'Large files' },
+  ]
 
   const navItems = (
     <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
@@ -67,6 +77,53 @@ export function Sidebar({ open, onClose, userName, userEmail, initials }: Sideba
           </Link>
         )
       })}
+
+      {/* AI Section Separator */}
+      <div className="my-4 px-2">
+        <div className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wide">
+          Settings
+        </div>
+      </div>
+
+      {/* File Chunking */}
+      <div className="px-2 py-3 space-y-2">
+        <div className="flex items-center gap-2">
+          <div className="flex h-6 w-6 items-center justify-center rounded bg-blue-100 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 shrink-0">
+            <Package className="h-3.5 w-3.5" />
+          </div>
+          <span className="text-xs font-semibold text-neutral-900 dark:text-white">File Chunking</span>
+        </div>
+        <div className="text-xs text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-900/30 rounded p-2">
+          {CHUNK_SIZES.find(c => c.size === selectedChunk)?.name}
+        </div>
+      </div>
+
+      {/* Encryption */}
+      <div className="px-2 py-3 space-y-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex h-6 w-6 items-center justify-center rounded bg-green-100 dark:bg-green-950/40 text-green-600 dark:text-green-400 shrink-0">
+              🔒
+            </div>
+            <span className="text-xs font-semibold text-neutral-900 dark:text-white">Encryption</span>
+          </div>
+          <button
+            onClick={() => setEncryptionEnabled(!encryptionEnabled)}
+            className={`relative inline-flex h-5 w-9 shrink-0 rounded-full transition-colors ${
+              encryptionEnabled ? 'bg-green-600 dark:bg-green-500' : 'bg-neutral-300 dark:bg-neutral-600'
+            }`}
+          >
+            <span
+              className={`pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform transition-transform ${
+                encryptionEnabled ? 'translate-x-4' : 'translate-x-0.5'
+              }`}
+            />
+          </button>
+        </div>
+        <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
+          {encryptionEnabled ? '🔒 Protected' : '🔓 Disabled'}
+        </p>
+      </div>
     </nav>
   )
 
