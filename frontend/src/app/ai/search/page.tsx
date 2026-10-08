@@ -25,6 +25,7 @@ interface AISearchResult {
   title: string
   snippet: string
   score: number
+  file_id?: string
 }
 
 interface SearchResults {

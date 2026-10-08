@@ -164,7 +164,7 @@ function AIChatWithChunking() {
             <input
               type="file"
               onChange={handleFileInputChange}
-              disabled={uploading || encrypting}
+              disabled={loading || encrypting}
               className="block w-full text-sm text-neutral-600 dark:text-neutral-400
                 file:mr-4 file:py-2 file:px-4
                 file:rounded-lg file:border-0
@@ -175,7 +175,7 @@ function AIChatWithChunking() {
                 disabled:opacity-50 disabled:cursor-not-allowed"
             />
 
-            {(uploading || encrypting) && (
+            {(loading || encrypting) && (
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-neutral-600 dark:text-neutral-400">

@@ -8,7 +8,7 @@ Uses Fernet (symmetric encryption) for simplicity, can be replaced with stronger
 import os
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from base64 import urlsafe_b64encode
 import secrets
 
@@ -36,7 +36,7 @@ class EncryptionService:
         if salt is None:
             salt = secrets.token_bytes(16)
 
-        kdf = PBKDF2(
+        kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
             salt=salt,
