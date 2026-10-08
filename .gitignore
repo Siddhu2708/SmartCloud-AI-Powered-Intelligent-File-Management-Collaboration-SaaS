@@ -1,0 +1,66 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.egg-info/
+.Python
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-workspace
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Next.js
+.next/
+out/
+.nextjs/
+
+# Build outputs
+.dist/
+dist/
+build/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv
+pip-log.txt
+
+# Node
+package-lock.json
+yarn.lock
+
+# Testing
+.coverage
+.pytest_cache/
+.nyc_output
+
+# Misc
+*.tmp
+.cache
