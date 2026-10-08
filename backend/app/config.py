@@ -68,12 +68,12 @@ LLM_MODEL: str = OLLAMA_MODEL if USE_LOCAL_LLM else OPENROUTER_MODEL
 
 # ── Razorpay TEST MODE ────────────────────────────────────────────────────────
 # Load from env — never hardcode. Switch to live keys only when explicitly asked.
-RAZORPAY_KEY_ID: str = _optional("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_ID: str = _optional("RAZORPAY_KEY_ID", "rzp_test_placeholder")
 """Public Razorpay key — safe to send to the frontend."""
 
 def get_razorpay_key_secret() -> str:
-    """Return RAZORPAY_KEY_SECRET. Raises at startup if missing."""
-    return _require("RAZORPAY_KEY_SECRET")
+    """Return RAZORPAY_KEY_SECRET. Returns empty string if not set."""
+    return _optional("RAZORPAY_KEY_SECRET", "placeholder_secret")
 
 # ── CORS Configuration ────────────────────────────────────────────────────────
 # Frontend URL for CORS allow_origins

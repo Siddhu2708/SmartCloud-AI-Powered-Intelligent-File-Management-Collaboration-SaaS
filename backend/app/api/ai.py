@@ -36,7 +36,6 @@ from app.services.auth_service import get_auth_service
 from app.config import USE_LOCAL_LLM, OLLAMA_BASE_URL, OLLAMA_MODEL
 
 router = APIRouter(prefix="/ai", tags=["ai"])
-service = SmartCloudAIService()
 
 
 # ── Request / response models ─────────────────────────────────────────────────
@@ -162,10 +161,12 @@ async def chat_with_documents(
     # Use authenticated user_id for vector search if not already provided
     effective_owner_id = payload.owner_id or user_id
     
+    # Create service instance with authenticated user
+    service = SmartCloudAIService(authenticated_user_id=user_id)
+    
     try:
         result = service.answer_query(
             query=payload.query,
-            owner_id=effective_owner_id,
             context_files=_files_to_dicts(payload.context_files),
         )
         return result
@@ -214,10 +215,12 @@ async def semantic_search(
     # Use authenticated user_id for vector search if not already provided
     effective_owner_id = payload.owner_id or user_id
     
+    # Create service instance with authenticated user
+    service = SmartCloudAIService(authenticated_user_id=user_id)
+    
     try:
         results = service.search_documents(
             query=payload.query,
-            owner_id=effective_owner_id,
             context_files=_files_to_dicts(payload.context_files),
         )
         return {"results": results, "search_type": "semantic" if payload.owner_id else "keyword"}
@@ -239,6 +242,9 @@ def summarize_document(payload: SummarizeRequest):
       summary: Generated summary
       file: Original file name
     """
+    # Create service instance with a placeholder user (this endpoint doesn't require auth)
+    service = SmartCloudAIService(authenticated_user_id="anonymous")
+    
     try:
         return service.summarize_document(
             file_name=payload.file_name,
@@ -249,7 +255,6 @@ def summarize_document(payload: SummarizeRequest):
         raise _llm_unavailable(exc)
 
 
-@router.post("/index")
 @router.post("/index")
 async def index_document(
     payload: IndexRequest,
@@ -290,6 +295,9 @@ async def index_document(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Cannot index files for another user.",
         )
+    
+    # Create service instance with authenticated user
+    service = SmartCloudAIService(authenticated_user_id=user_id)
     
     try:
         from app.services.document_processor import process_document

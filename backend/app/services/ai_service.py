@@ -342,6 +342,7 @@ class SmartCloudAIService:
     def search_documents(
         self,
         query: str,
+        owner_id: str | None = None,
         context_files: list[dict[str, Any]] | None = None,
     ) -> list[dict[str, Any]]:
         """
@@ -403,6 +404,7 @@ class SmartCloudAIService:
     def answer_query(
         self,
         query: str,
+        owner_id: str | None = None,
         context_files: list[dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
         """
