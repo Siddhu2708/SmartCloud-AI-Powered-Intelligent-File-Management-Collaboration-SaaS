@@ -1,4 +1,4 @@
-setuptools>=70.0.0
+setuptools==80.9.0
 wheel
 fastapi==0.115.0
 uvicorn==0.32.0
